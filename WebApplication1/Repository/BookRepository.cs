@@ -1,9 +1,8 @@
-﻿using BooksApi.Models.Entites;
-using BooksApi.Repository.Entites;
-using BooksApi.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApplication1.Interfaces;
+using WebApplication1.Repository.Entities;
 
-namespace BooksApi.Repository;
+namespace WebApplication1.Repository;
 
 public class BookRepository(AppDbContext dbContext) : IBookRepository
 {

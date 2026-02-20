@@ -1,6 +1,8 @@
-﻿using BooksApi.Service.DTOs;
+﻿
 
-namespace BooksApi.Controllers.VMs;
+using WebApplication1.Service.DTOs;
+
+namespace WebApplication1.Controllers.VMs;
 
 public class GetAllBooksResponse
 {

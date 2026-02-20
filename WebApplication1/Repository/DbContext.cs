@@ -1,8 +1,7 @@
-﻿using BooksApi.Models.Entites;
-using BooksApi.Repository.Entites;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApplication1.Repository.Entities;
 
-namespace BooksApi.Repository;
+namespace WebApplication1.Repository;
 
 public class AppDbContext : DbContext
 {
@@ -17,9 +16,7 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=db41761.public.databaseasp.net; Database=db41761; " +
-                 "User Id=db41761; Password=5t!YZ7z+3x@N; Encrypt=True; TrustServerCertificate=True; " +
-                 "MultipleActiveResultSets=True;");
+            optionsBuilder.UseSqlServer("Server=db41761.public.databaseasp.net; Database=db41761; User Id=db41761; Password=5t!YZ7z+3x@N; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;");
         }
     }
 }

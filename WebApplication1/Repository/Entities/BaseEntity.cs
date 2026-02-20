@@ -1,4 +1,4 @@
-﻿namespace BooksApi.Models.Entites;
+﻿namespace WebApplication1.Repository.Entites;
 
 public class BaseEntity
 {

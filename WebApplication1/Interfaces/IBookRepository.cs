@@ -1,6 +1,7 @@
-﻿using BooksApi.Repository.Entites;
+﻿using WebApplication1.Repository.Entites;
+using WebApplication1.Repository.Entities;
 
-namespace BooksApi.Repository.Interfaces;
+namespace WebApplication1.Interfaces;
 
 public interface IBookRepository
 {

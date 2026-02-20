@@ -1,7 +1,8 @@
-﻿using BooksApi.Controllers.VMs;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Controllers.VMs;
+using WebApplication1.Interfaces;
 
-namespace BooksApi.Controllers;
+namespace WebApplication1.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class BooksController(IBookService bookService) : ControllerBase
@@ -28,9 +29,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var serviceResult = await bookService.GetBooksByIdAsync(id);
+        var serviceResult = await bookService.GetBookByIdAsync(id);
         return Ok(serviceResult);
     }
-
-    
 }

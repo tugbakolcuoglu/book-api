@@ -1,15 +1,17 @@
-﻿using BooksApi.Service.DTOs;
-using BooksApi.Service.interfaces;
-using BooksApi.Repositories.Interfaces;
-using BooksApi.Repository.Interfaces;
+﻿
 
-namespace BooksApi.service;
+using WebApplication1.Interfaces;
+using WebApplication1.Service.DTOs;
+
+
+namespace WebApplication1.Service;
 
 public class BookService(IBookRepository bookRepository) : IBookService
 {
-    public async task<List<BookDto>> GetAllBooksAsync()
+    public async Task<List<BookDto>> GetAllBooksAsync()
     {
         var books = await bookRepository.GetAllBooksAsync();
+        
         var result = books.Select(x => new BookDto
         {
             Id = x.Id,
@@ -18,11 +20,13 @@ public class BookService(IBookRepository bookRepository) : IBookService
             IsAvailable = x.IsAvailable,
             Type = x.Type
         }).ToList();
-        return books;
+        
+        return result;
     }
-    public async task<BookDto?> GetBookByIdAsync(Guid id)
+    public async Task<BookDto?> GetBookByIdAsync(Guid id)
     {
-        var book = await bookRepository.GetBookByIdAsync(id);
+        var book = await bookRepository.GetBooksByIdAsync(id);
+        
         var result = book.Select(x => new BookDto
         {
             Id = x.Id,
@@ -31,6 +35,7 @@ public class BookService(IBookRepository bookRepository) : IBookService
             IsAvailable = x.IsAvailable,
             Type = x.Type
         }).FirstOrDefault();
+        
         return result;
     }
 }

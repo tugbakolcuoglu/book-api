@@ -1,7 +1,7 @@
 ﻿using BooksApi.Constants;
-using BooksApi.Models.Entites;
+using WebApplication1.Repository.Entites;
 
-namespace BooksApi.Repository.Entites;
+namespace WebApplication1.Repository.Entities;
 public class Book : BaseEntity
 {
     public string Title { get; set; } = null!;

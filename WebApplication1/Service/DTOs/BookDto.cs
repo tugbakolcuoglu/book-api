@@ -1,6 +1,6 @@
 ﻿using BooksApi.Constants;
 
-namespace BooksApi.Service.DTOs;
+namespace WebApplication1.Service.DTOs;
 
 public class BookDto
 {
