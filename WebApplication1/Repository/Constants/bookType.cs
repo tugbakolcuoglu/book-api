@@ -1,0 +1,35 @@
+﻿namespace BooksApi.Constants;
+
+public enum BookType
+{
+    Biography,
+    ScienceFiction,
+    Fantasy,
+    Mystery,
+    Romance,
+    Thriller,
+    NonFiction,
+    Historical,
+    SelfHelp,
+    Poetry,
+    Horror,
+    Adventure,
+    Science,
+    Philosophy,
+    Art,
+    Religion,
+    Travel,
+    Cooking,
+    YoungAdult,
+    Classic,
+    GraphicNovel,
+    Comics,
+    Memoir,
+    Dystopian,
+    Paranormal,
+    UrbanFantasy,
+    Contemporary,
+    HistoricalFiction,
+    Satire,
+    Humor
+}
