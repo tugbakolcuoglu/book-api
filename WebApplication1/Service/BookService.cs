@@ -38,4 +38,39 @@ public class BookService(IBookRepository bookRepository) : IBookService
         
         return result;
     }
+    public async Task<BookDto> AddBookAsync(BookDto bookDto)
+    {
+        var book = new Repository.Entities.Book
+        {
+            Id = Guid.NewGuid(),
+            Title = bookDto.Title,
+            Author = bookDto.Author,
+            IsAvailable = bookDto.IsAvailable,
+            Type = bookDto.Type
+        };
+        
+        await bookRepository.AddBookAsync(book);
+        return new BookDto()
+        {
+            Id = book.Id,
+            Title = book.Title,
+            Author = book.Author,
+            IsAvailable = book.IsAvailable,
+            Type = book.Type
+        };
+    }
+    public async Task<bool> UpdateBookAsync(BookDto bookDto)
+    {
+        var book = new Repository.Entities.Book
+        {
+            Id = bookDto.Id,
+            Title = bookDto.Title,
+            Author = bookDto.Author,
+            IsAvailable = bookDto.IsAvailable,
+            Type = bookDto.Type
+        };
+    
+        await bookRepository.UpdateBookAsync(book);
+        return true;
+    }
 }

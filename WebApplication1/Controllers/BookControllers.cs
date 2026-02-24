@@ -33,33 +33,55 @@ public class BooksController(IBookService bookService) : ControllerBase
         var serviceResult = await bookService.GetBookByIdAsync(id);
         return Ok(serviceResult);
     }
-    
-    // TODO: Create, Delete Endpointleri implemente edilecek.
 
-    // [HttpPost]
-    // public async Task<IActionResult> Create(CreateBookRequest request)
-    // {
-    //     var bookDto = new BookDto()
-    //     {
-    //         // id basma isi logic olarak application (servise) konusudur. orda basialcak.
-    //         Title = request.Title,
-    //         Author = request.Author,
-    //         IsAvailable = request.IsAvailable,
-    //         Type = request.Type
-    //     };
-    //     var createResult = await bookService.CreateNewBookAsync(bookDto); // gelen kitap nesnesine Id eklicek, ve repository'e gonderecek. true || false donecek
-    //     if (createResult)
-    //     {
-    //         return Ok();
-    //     }
-    //     return BadRequest();
-    // }
-    
-    // servis katmaninda bu islem icin CreateNewBookAsync metodu olusturulacak. Bu metod gelen kitap nesnesine Id basip repository'e gonderecek.
-    // ONCE INTERFACE (IBookService) EKLENECEK, SONRA SOMUT SINIT (BookService) EKLENECEK
-    // ayni mantik repositoy icin de gecerli.
-    
-    // Doyasiyla kod yazmaya reposiyotu katmanidan baslanarak yapilirsa hata ihtimali duser.
-    // cunku en icerden baslamis oluruz, disari dgoru (controller) a varmis oluruz.
+    [HttpPost]
+    public async Task<IActionResult> AddBook([FromBody]AddBookRequest request)
+    {
+        var bookDto = new BookDto()
+        {
+            Title = request.Title,
+            Author = request.Author,
+            IsAvailable = request.IsAvailable,
+            Type = request.Type
+        };
+        var response = await bookService.AddBookAsync(bookDto);
+        return Ok(response);
+    }
+    [HttpPut]
+    public async Task<IActionResult> UpdateBook([FromQuery]Guid id, [FromBody] UpdateBookRequest request)
+    {
+        var bookDto = new BookDto
+        {
+            Id = id,
+            Title = request.Title,
+            Author = request.Author,
+            IsAvailable = request.IsAvailable
+        };
 
+        var updated = await bookService.UpdateBookAsync(bookDto);
+
+        if (!updated)
+            return NotFound();
+
+        return Ok();
+    }
+    
+    
+    
+    // update işlemi 6 adımda gerceklesecek
+    // 1- requestten gelen nesne DTOya donusturulup servıs katmanına gonderılır
+    // 2- servis katmanı gelen nesneyi dmo ya donusturup repository katmanına gonderır
+    // 3- repository katmanı gelen model içindeki id ile db ye sorgu atıp guncellenecek modeli bulur ve gunceller
+    // 4- verılen id ye sahip bir model bulunmazsa false doner ve update islemi yapilmaz. Eger model bulunursa guncellenir ve true doner
+    // 5- servis katmanı repodan gelen metodun response unu doner (boolean) ve controller a gonderır
+    // 6- controller gelen boolean degere gore 200 veya 40x doner.
+    
+    // yapılacak kilit noktalar
+    // - clienttan gelecek olan isteği karsılayacak bır VM (ViewModel) olusturulacak ve bu VM requestten gelen veriyi karsilayacak
+    // - bu modeli servis katmanına tasıyacak DTO (Data Transfer Object) olusturulacak
+    // - bu DTO yu repo katmanına tasıayacak DMO (Data Model Object) olusturulacak
+    // - mevcut reposıtory metodu ve ınterface guncellenecek ve update islemi gerceklestirilecek
+    // - controllerda update islemi gerceklestirilecek ve clienta uygun response donecek (boolean)
+    // - controller end-pointı HttpPut olacak ve url de id parametresi bulunacak (api/books/{id})
+    
 }
