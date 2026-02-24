@@ -6,4 +6,6 @@ public interface IBookService
 {
     Task<List<BookDto>> GetAllBooksAsync();
     Task<BookDto?> GetBookByIdAsync(Guid id);
+    Task<BookDto> AddBookAsync(BookDto bookDto);
+    Task<bool> UpdateBookAsync(BookDto bookDto);
 }
