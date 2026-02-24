@@ -1,8 +1,8 @@
-﻿using BooksApi.Constants;
-using WebApplication1.Repository.Entites;
+using BooksApi.Constants;
 
-namespace WebApplication1.Repository.Entities;
-public class Book : BaseEntity
+namespace WebApplication1.Controllers.VMs;
+
+public class CreateBookRequest
 {
     public string Title { get; set; } = null!;
     public string Author { get; set; } = null!;
