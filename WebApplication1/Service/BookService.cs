@@ -1,13 +1,18 @@
-﻿
-
-using WebApplication1.Interfaces;
+﻿using WebApplication1.Interfaces;
 using WebApplication1.Service.DTOs;
 
 
 namespace WebApplication1.Service;
 
-public class BookService(IBookRepository bookRepository) : IBookService
+public class BookService : IBookService
 {
+    private readonly IBookRepository bookRepository;
+
+    public BookService(IBookRepository bookRepository)
+    {
+        this.bookRepository = bookRepository;
+    }
+    
     public async Task<List<BookDto>> GetAllBooksAsync()
     {
         var books = await bookRepository.GetAllBooksAsync();
@@ -20,9 +25,9 @@ public class BookService(IBookRepository bookRepository) : IBookService
             IsAvailable = x.IsAvailable,
             Type = x.Type
         }).ToList();
-        
         return result;
     }
+    
     public async Task<BookDto?> GetBookByIdAsync(Guid id)
     {
         var book = await bookRepository.GetBooksByIdAsync(id);
@@ -35,9 +40,9 @@ public class BookService(IBookRepository bookRepository) : IBookService
             IsAvailable = x.IsAvailable,
             Type = x.Type
         }).FirstOrDefault();
-        
         return result;
     }
+    
     public async Task<BookDto> AddBookAsync(BookDto bookDto)
     {
         var book = new Repository.Entities.Book
@@ -59,6 +64,17 @@ public class BookService(IBookRepository bookRepository) : IBookService
             Type = book.Type
         };
     }
+
+    public async Task<bool> DeleteBookAsync(Guid id)
+    {
+        var books = await bookRepository.GetBooksByIdAsync(id);
+        if (books == null || !books.Any())
+        {
+            return false;
+        }
+        return await bookRepository.DeleteBookAsync(id);
+    }
+    
     public async Task<bool> UpdateBookAsync(BookDto bookDto)
     {
         var book = new Repository.Entities.Book
@@ -69,7 +85,6 @@ public class BookService(IBookRepository bookRepository) : IBookService
             IsAvailable = bookDto.IsAvailable,
             Type = bookDto.Type
         };
-    
         await bookRepository.UpdateBookAsync(book);
         return true;
     }

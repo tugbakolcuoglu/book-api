@@ -6,8 +6,7 @@ namespace WebApplication1.Repository;
 
 public class BookRepository(AppDbContext dbContext) : IBookRepository
 {
-    // Repository katmaninin isi DB 'ye sorgu atmaktir ve servis katmanina vermektir. Is mantigi Logicler servis katmaninda yapilacak. 
-
+    
     public async Task<List<Book>> GetAllBooksAsync()
     {
         var books = await dbContext.Books.ToListAsync();
@@ -19,16 +18,26 @@ public class BookRepository(AppDbContext dbContext) : IBookRepository
         var books = dbContext.Books.Where(book => book.Id == id).ToListAsync();
         return books;
     }
+    
     public async Task AddBookAsync(Book book)
     {
         await dbContext.Books.AddAsync(book);
         await dbContext.SaveChangesAsync();
     }
+    
+    public async Task<bool> DeleteBookAsync(Guid id)
+    {
+        var book = await dbContext.Books.FindAsync(id);
+        if (book == null)
+            return false;
+        dbContext.Books.Remove(book);
+        await dbContext.SaveChangesAsync();
+        return true;
+    }
+    
     public async Task UpdateBookAsync(Book book)
     {
         var existingBook = await dbContext.Books.FindAsync(book.Id);
-        
-        // TODO: eger kitap bulunmazsa false donmeli, kitap bulunursa gelen nesnedeki alanların dolu bos olup olmadıgına bakarak tek tek butun proplar guncellenmeli
         if (existingBook != null)
         {
             existingBook.Title = book.Title;
@@ -39,6 +48,4 @@ public class BookRepository(AppDbContext dbContext) : IBookRepository
             await dbContext.SaveChangesAsync();
         }
     }
-    
-    
 }
