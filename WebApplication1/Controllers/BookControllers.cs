@@ -47,6 +47,16 @@ public class BooksController(IBookService bookService) : ControllerBase
         var response = await bookService.AddBookAsync(bookDto);
         return Ok(response);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteBook(Guid id)
+    {
+        var isDeleted = await bookService.DeleteBookAsync(id);
+        if (!isDeleted)
+            return NotFound("Kitap bulunamadı veya silinemedi.");
+        return Ok(new { Message = "Kitap başarıyla silindi." });
+    }
+
     [HttpPut]
     public async Task<IActionResult> UpdateBook([FromQuery]Guid id, [FromBody] UpdateBookRequest request)
     {
