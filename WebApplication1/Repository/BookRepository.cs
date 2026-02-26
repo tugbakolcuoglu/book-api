@@ -13,10 +13,10 @@ public class BookRepository(AppDbContext dbContext) : IBookRepository
         return books;
     }
 
-    public Task<List<Book>> GetBooksByIdAsync(Guid id)
+    public async Task<Book?> GetBookByIdAsync(Guid id)
     {
-        var books = dbContext.Books.Where(book => book.Id == id).ToListAsync();
-        return books;
+        var book = await dbContext.Books.FindAsync(id);
+        return book;
     }
     
     public async Task AddBookAsync(Book book)
@@ -35,17 +35,9 @@ public class BookRepository(AppDbContext dbContext) : IBookRepository
         return true;
     }
     
-    public async Task UpdateBookAsync(Book book)
+    public async Task<int> UpdateBookAsync(Book entity)
     {
-        var existingBook = await dbContext.Books.FindAsync(book.Id);
-        if (existingBook != null)
-        {
-            existingBook.Title = book.Title;
-            existingBook.Author = book.Author;
-            existingBook.IsAvailable = book.IsAvailable;
-            existingBook.Type = book.Type;
-    
-            await dbContext.SaveChangesAsync();
-        }
+        dbContext.Books.Update(entity);
+        return await dbContext.SaveChangesAsync();
     }
 }

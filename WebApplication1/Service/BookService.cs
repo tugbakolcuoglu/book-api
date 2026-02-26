@@ -1,22 +1,16 @@
-﻿using WebApplication1.Interfaces;
+﻿using WebApplication1.Controllers.VMs;
+using WebApplication1.Interfaces;
 using WebApplication1.Service.DTOs;
 
 
 namespace WebApplication1.Service;
 
-public class BookService : IBookService
+public class BookService(IBookRepository bookRepository) : IBookService
 {
-    private readonly IBookRepository bookRepository;
-
-    public BookService(IBookRepository bookRepository)
-    {
-        this.bookRepository = bookRepository;
-    }
-    
     public async Task<List<BookDto>> GetAllBooksAsync()
     {
         var books = await bookRepository.GetAllBooksAsync();
-        
+
         var result = books.Select(x => new BookDto
         {
             Id = x.Id,
@@ -27,22 +21,24 @@ public class BookService : IBookService
         }).ToList();
         return result;
     }
-    
+
     public async Task<BookDto?> GetBookByIdAsync(Guid id)
     {
-        var book = await bookRepository.GetBooksByIdAsync(id);
-        
-        var result = book.Select(x => new BookDto
+        var book = await bookRepository.GetBookByIdAsync(id);
+        if (book == null)
+            return null;
+
+        var result = new BookDto
         {
-            Id = x.Id,
-            Title = x.Title,
-            Author = x.Author,
-            IsAvailable = x.IsAvailable,
-            Type = x.Type
-        }).FirstOrDefault();
+            Id = book.Id,
+            Title = book.Title,
+            Author = book.Author,
+            IsAvailable = book.IsAvailable,
+            Type = book.Type
+        };
         return result;
     }
-    
+
     public async Task<BookDto> AddBookAsync(BookDto bookDto)
     {
         var book = new Repository.Entities.Book
@@ -53,7 +49,7 @@ public class BookService : IBookService
             IsAvailable = bookDto.IsAvailable,
             Type = bookDto.Type
         };
-        
+
         await bookRepository.AddBookAsync(book);
         return new BookDto()
         {
@@ -67,25 +63,22 @@ public class BookService : IBookService
 
     public async Task<bool> DeleteBookAsync(Guid id)
     {
-        var books = await bookRepository.GetBooksByIdAsync(id);
-        if (books == null || !books.Any())
-        {
-            return false;
-        }
         return await bookRepository.DeleteBookAsync(id);
     }
-    
-    public async Task<bool> UpdateBookAsync(BookDto bookDto)
+
+    public async Task<bool> UpdateBookAsync(Guid id, UpdateBookRequest request)
     {
-        var book = new Repository.Entities.Book
-        {
-            Id = bookDto.Id,
-            Title = bookDto.Title,
-            Author = bookDto.Author,
-            IsAvailable = bookDto.IsAvailable,
-            Type = bookDto.Type
-        };
-        await bookRepository.UpdateBookAsync(book);
-        return true;
+        // BURDAKI AMACIMIZ SERVISE KATMANINDA BIR IS MANTIGINI SIMULE ETMEYE CALISMAK. 
+        // YOKSA UPDATE ISLEIMINI REPOSITOY KATMANINDA YAPARDIK, EF CHANGE TRACKER ORDA DAHA RAHAT CALISIR, EKSTRA BIR UPDATE METODU CALISTIRMADAN DIREK SAVECHAGES YAPABILIRDIK
+        var entity = await bookRepository.GetBookByIdAsync(id);
+        if (entity == null) return false;
+
+        entity.Title = request.Title;
+        entity.Author = request.Author;
+        entity.IsAvailable = request.IsAvailable;
+
+        var result = await bookRepository.UpdateBookAsync(entity);
+
+        return result >= 0;
     }
 }

@@ -14,15 +14,15 @@ public class BooksController(IBookService bookService) : ControllerBase
         var serviceResult = await bookService.GetAllBooksAsync();
         var totalCount = serviceResult.Count;
 
-        if (totalCount == 0)
-        {
-            return NotFound();
-        }
+        // if (totalCount == 0)
+        // {
+        //     return NotFound();
+        // }
         
         var response = new GetAllBooksResponse()
         {
             Books = serviceResult,
-            TotalCount = serviceResult.Count
+            TotalCount = totalCount
         };
         return Ok(response);
     }
@@ -48,7 +48,7 @@ public class BooksController(IBookService bookService) : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBook(Guid id)
     {
         var isDeleted = await bookService.DeleteBookAsync(id);
@@ -57,23 +57,15 @@ public class BooksController(IBookService bookService) : ControllerBase
         return Ok(new { Message = "Kitap başarıyla silindi." });
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateBook([FromQuery]Guid id, [FromBody] UpdateBookRequest request)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateBook(Guid id, [FromBody] UpdateBookRequest request)
     {
-        var bookDto = new BookDto
-        {
-            Id = id,
-            Title = request.Title,
-            Author = request.Author,
-            IsAvailable = request.IsAvailable
-        };
-
-        var updated = await bookService.UpdateBookAsync(bookDto);
+        var updated = await bookService.UpdateBookAsync(id, request);
 
         if (!updated)
-            return NotFound();
+            return NotFound(updated);
 
-        return Ok();
+        return Ok(updated);
     }
     
     

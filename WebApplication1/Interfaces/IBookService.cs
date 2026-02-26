@@ -1,4 +1,5 @@
-﻿using WebApplication1.Service.DTOs;
+﻿using WebApplication1.Controllers.VMs;
+using WebApplication1.Service.DTOs;
 
 namespace WebApplication1.Interfaces;
 
@@ -8,5 +9,5 @@ public interface IBookService
     Task<BookDto?> GetBookByIdAsync(Guid id);
     Task<BookDto> AddBookAsync(BookDto bookDto);
     Task<bool> DeleteBookAsync(Guid id);
-    Task<bool> UpdateBookAsync(BookDto bookDto);
+    Task<bool> UpdateBookAsync(Guid id, UpdateBookRequest request);
 }
